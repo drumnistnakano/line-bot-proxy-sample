@@ -2,6 +2,8 @@ import { ClientConfig, WebhookEvent, messagingApi } from '@line/bot-sdk'
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import { isValidateHeaders } from '../util/validateRequest'
 import { ReplyMessageResponse } from '@line/bot-sdk/dist/messaging-api/api'
+import { fetch } from 'undici'
+import 'source-map-support/register'
 
 const config: ClientConfig = {
   channelAccessToken: process.env.LINE_MESSAGING_API_CHANNEL_ACCESS_TOKEN!,
@@ -54,6 +56,22 @@ export const handler = async (
       }
     }
 
+    console.log('Webhookへのリクエスト開始')
+
+    const response = await fetch(new URL(process.env.OLD_LINE_WEBHOOK_URL!), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: event.body,
+    })
+
+    console.log('Webhookへのリクエスト終了')
+    console.log(response)
+
+    const responseBody = await response.text()
+    console.log({ responseBody })
+
     // const webhookRequestBody: WebhookRequestBody = JSON.parse(event.body!)
     // const { events } = webhookRequestBody
     // const results = await Promise.allSettled(
@@ -69,7 +87,7 @@ export const handler = async (
 
     return {
       statusCode: 200,
-      body: JSON.stringify({}),
+      body: responseBody,
     }
   } catch (err) {
     console.error(err)

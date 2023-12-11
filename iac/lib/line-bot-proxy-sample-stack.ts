@@ -13,7 +13,7 @@ export class LineBotProxySampleStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props)
 
-    const { lineChannelAccessToken, lineChannelSecret } =
+    const { lineChannelAccessToken, lineChannelSecret, oldLineWebhookUrl } =
       loadSsmParameterStores({ construct: this })
 
     const lineEchoBotHandler = new NodejsFunction(this, 'lineBotProxyHandler', {
@@ -24,11 +24,12 @@ export class LineBotProxySampleStack extends Stack {
       environment: {
         LINE_MESSAGING_API_CHANNEL_ACCESS_TOKEN: lineChannelAccessToken,
         LINE_MESSAGING_API_CHANNEL_SECRET: lineChannelSecret,
+        OLD_LINE_WEBHOOK_URL: oldLineWebhookUrl,
       },
     })
 
-    const api = new RestApi(this, 'lineEchoBotApi', {
-      restApiName: 'lineEchoBotApi',
+    const api = new RestApi(this, 'lineBotProxyApi', {
+      restApiName: 'lineBotProxyApi',
       deployOptions: {
         tracingEnabled: true,
         dataTraceEnabled: true,

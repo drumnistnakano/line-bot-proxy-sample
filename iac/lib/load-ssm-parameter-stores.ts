@@ -7,6 +7,7 @@ export interface LoadSsmParameterStoresProps {
 export interface LoadSsmParameterStoresResult {
   lineChannelAccessToken: string
   lineChannelSecret: string
+  oldLineWebhookUrl: string
 }
 
 /**
@@ -26,8 +27,13 @@ export const loadSsmParameterStores = ({
     construct,
     'lineChannelSecret'
   )
+  const oldLineWebhookUrl = ssm.StringParameter.valueForStringParameter(
+    construct,
+    'oldLineWebhookUrl'
+  )
   return {
     lineChannelAccessToken,
     lineChannelSecret,
+    oldLineWebhookUrl,
   }
 }
