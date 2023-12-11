@@ -1,44 +1,27 @@
-import { Stack, StackProps, Duration } from 'aws-cdk-lib'
-import { Runtime, Tracing } from 'aws-cdk-lib/aws-lambda'
-import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs'
-import {
-  RestApi,
-  MethodLoggingLevel,
-  LambdaIntegration,
-} from 'aws-cdk-lib/aws-apigateway'
+import { Stack, StackProps } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 import { loadSsmParameterStores } from './load-ssm-parameter-stores'
+import { createDdbTables } from './ddb-table'
+import { createLineBotProxyApi } from './line-bot-proxy-api'
 
 export class LineBotProxySampleStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props)
 
+    // SSMパラメータストア
     const { lineChannelAccessToken, lineChannelSecret, oldLineWebhookUrl } =
       loadSsmParameterStores({ construct: this })
 
-    const lineEchoBotHandler = new NodejsFunction(this, 'lineBotProxyHandler', {
-      runtime: Runtime.NODEJS_20_X,
-      entry: '../proxy-server/src/handler.ts',
-      timeout: Duration.seconds(30),
-      tracing: Tracing.ACTIVE,
-      environment: {
-        LINE_MESSAGING_API_CHANNEL_ACCESS_TOKEN: lineChannelAccessToken,
-        LINE_MESSAGING_API_CHANNEL_SECRET: lineChannelSecret,
-        OLD_LINE_WEBHOOK_URL: oldLineWebhookUrl,
-      },
-    })
+    // DynamoDBテーブル
+    const { lineUsersTable } = createDdbTables({ construct: this })
 
-    const api = new RestApi(this, 'lineBotProxyApi', {
-      restApiName: 'lineBotProxyApi',
-      deployOptions: {
-        tracingEnabled: true,
-        dataTraceEnabled: true,
-        loggingLevel: MethodLoggingLevel.INFO,
-        metricsEnabled: true,
-      },
+    // LINE Bot APIリソース
+    createLineBotProxyApi({
+      construct: this,
+      lineUsersTable,
+      lineChannelAccessToken,
+      lineChannelSecret,
+      oldLineWebhookUrl,
     })
-
-    const items = api.root.addResource('proxy')
-    items.addMethod('POST', new LambdaIntegration(lineEchoBotHandler))
   }
 }
