@@ -1,0 +1,44 @@
+{
+  "name": "line-bot-proxy-sample",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "proxy-server",
+    "iac"
+  ],
+  "scripts": {
+    "cdk": "cdk",
+    "deploy": "cdk deploy '*' --require-approval never",
+    "check:format": "prettier --cache -c '**/*.{ts,json,yml,yaml,md}'",
+    "check:lint": "eslint --cache --max-warnings 0 '**/*.ts'",
+    "fix": "run-s fix:format fix:lint check:tsc",
+    "fix:format": "prettier --cache --write '**/*.{ts,json,yml,yaml,md}'",
+    "fix:lint": "eslint --cache --max-warnings 0 --fix '**/*.{ts,tsx}'",
+    "update:pkgs": "ncu -u && npm run update:pkgs -ws && npm install"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "devDependencies": {
+    "@tsconfig/strictest": "^2.0.2",
+    "@types/node": "^20.10.4",
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/parser": "^6.13.2",
+    "cspell": "^8.1.3",
+    "eslint": "^8.55.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-strict-dependencies": "^1.3.0",
+    "npm-check-updates": "^16.14.11",
+    "prettier": "3.1.1",
+    "typescript": "^5.3.3"
+  },
+  "volta": {
+    "node": "20.10.0",
+    "npm": "10.2.5"
+  },
+  "engines": {
+    "node": ">= 20.x",
+    "npm": ">= 10.x"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.json",
+  "exclude": ["node_modules", "tsc-cache"],
+  "compilerOptions": {
+    "ignoreDeprecations": "5.0",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "outDir": "./tsc-cache",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "target": "ES2020"
+  }
+}
