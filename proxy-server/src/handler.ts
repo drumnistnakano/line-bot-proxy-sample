@@ -61,7 +61,8 @@ export const handler = async (
     const response = await fetch(new URL(process.env.OLD_LINE_WEBHOOK_URL!), {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
+        'x-line-signature': event.headers['x-line-signature']!,
       },
       body: event.body,
     })
