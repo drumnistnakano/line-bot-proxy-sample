@@ -18,7 +18,7 @@ export class LineBotProxySampleStack extends Stack {
 
     const lineEchoBotHandler = new NodejsFunction(this, 'lineBotProxyHandler', {
       runtime: Runtime.NODEJS_20_X,
-      entry: 'proxy-server/src/handler.ts',
+      entry: '../proxy-server/src/handler.ts',
       timeout: Duration.seconds(30),
       tracing: Tracing.ACTIVE,
       environment: {
