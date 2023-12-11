@@ -8,10 +8,13 @@
   },
   "description": "",
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "3.470.0",
+    "@aws-sdk/lib-dynamodb": "3.470.0",
     "@line/bot-sdk": "8.0.2",
     "aws-lambda": "1.0.7",
-    "source-map-support": "^0.5.21",
-    "undici": "^6.0.1"
+    "source-map-support": "0.5.21",
+    "undici": "6.0.1",
+    "zod": "3.22.4"
   },
   "devDependencies": {
     "@types/aws-lambda": "8.10.130"
